@@ -1,0 +1,83 @@
+<template>
+  <div>
+    <h1 class="centralizado">{{ titulo }}</h1>
+
+    <!-- Comando para fazer um search -->
+    <!-- v-on:input é o comando que ele vai pegar o que foi escrito no Search -->
+    <input type="search" class="filtro" @input="filtro = $event.target.value" placeholder="filtre por parte do titulo">
+    <ul class="lista-fotos">
+      <li class="lista-fotos-item" v-for="foto in fotosComFiltro" :key="foto">
+        
+        <meu-painel :titulo="foto.titulo">
+          <imagem-responsiva :url="foto.url" :titulo="foto.titulo"></imagem-responsiva>
+        </meu-painel>         
+
+      </li>
+    </ul>
+
+  </div>
+</template>
+
+<script>
+import Painel from '../shared/painel/Painel.vue';
+import ImagemResponsiva from '../shared/imagem-responsiva/imagemResponsiva.vue';
+export default {
+
+  components: {
+    'meu-painel' : Painel,
+    'imagem-responsiva' : ImagemResponsiva
+  },
+
+  data() {
+
+    return {
+
+      titulo: 'Alurapic', 
+      fotos: [],    
+      filtro: ''  
+    }
+  },
+
+  computed: {
+
+    fotosComFiltro(){
+      /* String em branco é falsa */
+      if(this.filtro){
+        /* filtrar - Cria uma expressão regular que diz o que você digitou e vai buscar a a lsita de fotos e buscar a que tem mesma expressão desconsiderando espaço (trim())
+         e case sensitive ('i')*/
+        let exp = new RegExp(this.filtro.trim(), 'i');
+        return this.fotos.filter(foto => exp.test(foto.titulo));
+      }else{
+        return this.fotos;
+      }
+    }
+
+  },
+  
+  created() {
+    //Pode omitir o let promise e o promise    
+    let promise = this.$http.get('http://localhost:3000/v1/fotos');
+    promise
+    .then(res => res.json())
+    .then(fotos => this.fotos = fotos, err => console.log(err));
+  }
+}
+
+</script>
+
+<style>
+.centralizado{
+  text-align: center;
+}
+.lista-fotos{
+  list-style: none;
+}
+.lista-fotos .lista-fotos-item{
+  display: inline-block;
+}
+.filtro{
+  display: block;
+  width: 100%;
+}
+</style>
+
