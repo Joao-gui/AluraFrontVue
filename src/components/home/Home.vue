@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1 class="centralizado">{{ titulo }}</h1>
-
     <!-- Comando para fazer um search -->
     <!-- v-on:input é o comando que ele vai pegar o que foi escrito no Search -->
     <input type="search" class="filtro" @input="filtro = $event.target.value" placeholder="filtre por parte do titulo">
@@ -10,36 +9,30 @@
         
         <meu-painel :titulo="foto.titulo">
           <imagem-responsiva :url="foto.url" :titulo="foto.titulo"></imagem-responsiva>
-        </meu-painel>         
-
+          <meu-botao tipo="button" rotulo="REMOVER" @botaoAtivado="remove(foto)" :confirmacao="true" estilo="perigo"/>
+        </meu-painel>
       </li>
     </ul>
-
   </div>
 </template>
-
 <script>
 import Painel from '../shared/painel/Painel.vue';
 import ImagemResponsiva from '../shared/imagem-responsiva/imagemResponsiva.vue';
+import Botao from '../shared/botao/Botao.vue';
 export default {
-
   components: {
     'meu-painel' : Painel,
-    'imagem-responsiva' : ImagemResponsiva
+    'imagem-responsiva' : ImagemResponsiva,
+    'meu-botao' : Botao
   },
-
   data() {
-
     return {
-
       titulo: 'Alurapic', 
       fotos: [],    
       filtro: ''  
     }
   },
-
   computed: {
-
     fotosComFiltro(){
       /* String em branco é falsa */
       if(this.filtro){
@@ -49,22 +42,21 @@ export default {
         return this.fotos.filter(foto => exp.test(foto.titulo));
       }else{
         return this.fotos;
-      }
+      }}
+  },  
+  methods: {
+    remove(foto){
+        alert('Foto ' + foto.titulo + ' removida.');    
     }
-
   },
-  
   created() {
     //Pode omitir o let promise e o promise    
     let promise = this.$http.get('http://localhost:3000/v1/fotos');
     promise
     .then(res => res.json())
     .then(fotos => this.fotos = fotos, err => console.log(err));
-  }
-}
-
+  }}
 </script>
-
 <style>
 .centralizado{
   text-align: center;
@@ -80,4 +72,3 @@ export default {
   width: 100%;
 }
 </style>
-

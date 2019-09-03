@@ -8,7 +8,6 @@
         </transition>
     </div> 
 </template>
-
 <script>
 export default {
     props: ['titulo'],
@@ -19,11 +18,8 @@ export default {
         }
     },
 }
-
 </script>
-
 <style scoped>
-
 .painel {
     padding: 0 auto;
     border: solid 2px grey;
@@ -51,6 +47,5 @@ export default {
     }
     .painel-fade-enter-active, .painel-fade-leave-active{
         transition: opacity 1s;
-    }
-  
+    }  
 </style>
